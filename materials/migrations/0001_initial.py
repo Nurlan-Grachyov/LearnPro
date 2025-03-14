@@ -7,37 +7,65 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Course',
+            name="Course",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='course name')),
-                ('preview', models.ImageField(upload_to='images/materials/course', verbose_name='preview')),
-                ('description', models.TextField(verbose_name='description')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="course name")),
+                (
+                    "preview",
+                    models.ImageField(
+                        upload_to="images/materials/course", verbose_name="preview"
+                    ),
+                ),
+                ("description", models.TextField(verbose_name="description")),
             ],
             options={
-                'verbose_name': 'Курс',
-                'verbose_name_plural': 'Курсы',
-                'ordering': ['name'],
+                "verbose_name": "Курс",
+                "verbose_name_plural": "Курсы",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Lesson',
+            name="Lesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='lesson name')),
-                ('description', models.TextField(verbose_name='description')),
-                ('preview', models.ImageField(upload_to='images/materials/lesson', verbose_name='preview')),
-                ('video_url', models.URLField(blank=True, null=True, verbose_name='Video URL')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="lesson name")),
+                ("description", models.TextField(verbose_name="description")),
+                (
+                    "preview",
+                    models.ImageField(
+                        upload_to="images/materials/lesson", verbose_name="preview"
+                    ),
+                ),
+                (
+                    "video_url",
+                    models.URLField(blank=True, null=True, verbose_name="Video URL"),
+                ),
             ],
             options={
-                'verbose_name': 'Урок',
-                'verbose_name_plural': 'Уроки',
-                'ordering': ['name'],
+                "verbose_name": "Урок",
+                "verbose_name_plural": "Уроки",
+                "ordering": ["name"],
             },
         ),
     ]

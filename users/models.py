@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -11,7 +10,9 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, verbose_name="Email")
     phone_number = PhoneNumberField(blank=True, null=True, verbose_name="Phone number")
     town = models.CharField(blank=True, null=True, verbose_name="town")
-    avatar = models.ImageField(blank=True, null=True, verbose_name="avatar", upload_to="images/users")
+    avatar = models.ImageField(
+        blank=True, null=True, verbose_name="avatar", upload_to="images/users"
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
