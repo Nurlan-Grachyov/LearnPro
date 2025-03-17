@@ -1,6 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import ForeignKey
 from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework.exceptions import ValidationError
+
+from materials.models import Course, Lesson
 
 
 class CustomUser(AbstractUser):
@@ -39,3 +43,57 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Payments(models.Model):
+    CASH = "cash"
+    PAYMENT_TRANSFER = "payment_transfer"
+
+    STATUS_IN_CHOICES = [
+        (CASH, "оплата наличными"),
+        (PAYMENT_TRANSFER, "оплата переводом"),
+    ]
+
+    user = ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
+    pay_date = models.DateField(
+        verbose_name="дата оплаты", auto_now_add=True, blank=True
+    )
+    paid_course = ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="paid_course",
+        null=True,
+        blank=True,
+    )
+    paid_lesson = ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name="paid_lesson",
+        null=True,
+        blank=True,
+    )
+    payment_amount = models.FloatField(verbose_name="сумма оплаты")
+    payment_method = models.CharField(
+        choices=STATUS_IN_CHOICES, max_length=16, verbose_name="способ оплаты"
+    )
+
+    def clean(self):
+        super().clean()
+        if not self.paid_course and not self.paid_lesson:
+            raise ValidationError(
+                "Должен быть указан либо оплаченный курс, либо оплаченный урок."
+            )
+
+    class Meta:
+        verbose_name = "Оплата"
+        verbose_name_plural = "Оплата"
+
+    def __str__(self):
+        return f"Вы оплатили {'курс ' + str(self.paid_course.name) if self.paid_course else 'урок ' + str(self.paid_lesson.name)} на сумму {self.payment_amount}"
+
+
+# пользователь,
+# дата оплаты,
+# оплаченный курс или урок,
+# сумма оплаты,
+# способ оплаты: наличные или перевод на счет.

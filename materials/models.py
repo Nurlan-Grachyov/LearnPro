@@ -16,6 +16,9 @@ class Course(models.Model):
         verbose_name_plural = "Курсы"
         ordering = ["name"]
 
+    def __str__(self):
+        return self.name
+
 
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
@@ -33,3 +36,6 @@ class Lesson(models.Model):
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
         ordering = ["name"]
+
+    def __str__(self):
+        return self.name

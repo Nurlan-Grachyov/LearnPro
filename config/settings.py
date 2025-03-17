@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "materials",
     "users",
     "phonenumber_field",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -90,13 +91,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'homeworkdrf',
-        'USER': 'postgres',
-        'PASSWORD': '07052001',
-        'HOST':'localhost',
-        'PORT':'5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "homeworkdrf",
+        "USER": "postgres",
+        "PASSWORD": "07052001",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 
