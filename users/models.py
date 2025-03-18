@@ -12,11 +12,12 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(null=True, blank=True, verbose_name="first_name")
     last_name = models.CharField(null=True, blank=True, verbose_name="last_name")
     email = models.EmailField(unique=True, verbose_name="Email")
-    phone_number = PhoneNumberField(blank=True, null=True, verbose_name="Phone number")
+    phone_number = PhoneNumberField(blank=True, null=True, verbose_name="Phone number", unique=True)
     town = models.CharField(blank=True, null=True, verbose_name="town")
     avatar = models.ImageField(
         blank=True, null=True, verbose_name="avatar", upload_to="images/users"
     )
+    is_staff = models.BooleanField(blank=True, default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -90,10 +91,3 @@ class Payments(models.Model):
 
     def __str__(self):
         return f"Вы оплатили {'курс ' + str(self.paid_course.name) if self.paid_course else 'урок ' + str(self.paid_lesson.name)} на сумму {self.payment_amount}"
-
-
-# пользователь,
-# дата оплаты,
-# оплаченный курс или урок,
-# сумма оплаты,
-# способ оплаты: наличные или перевод на счет.

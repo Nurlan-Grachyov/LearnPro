@@ -1,12 +1,23 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
-
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from materials.apps import LearningConfig
 from materials.views import PaymentsViewSet
-from users.views import CustomUserViewSets
+from users.views import CustomUserViewSets, RegisterCreateAPIView
 
 app_name = LearningConfig.name
 
 router = DefaultRouter()
 router.register(r"user", CustomUserViewSets, basename="users")
 router.register(r"payments", PaymentsViewSet, basename="payments")
-urlpatterns = [] + router.urls
+
+urlpatterns = [
+path('login/', TokenObtainPairView.as_view(), name='login'),
+path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+path('register/', RegisterCreateAPIView.as_view(), name='register'),
+] + router.urls
+
+

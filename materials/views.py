@@ -3,6 +3,7 @@ from rest_framework import generics, viewsets
 from rest_framework.filters import OrderingFilter
 
 from materials.models import Course, Lesson
+from materials.permissions import Moderators
 from materials.serializers import (CourseSerializer, LessonSerializer,
                                    PaymentsSerializer)
 from users.models import Payments
@@ -11,16 +12,19 @@ from users.models import Payments
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    permission_classes = [Moderators]
 
 
 class LessonListCreateApiView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [Moderators]
 
 
 class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [Moderators]
 
 
 class PaymentsViewSet(viewsets.ModelViewSet):
