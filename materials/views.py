@@ -1,35 +1,31 @@
-from django_filters.rest_framework import DjangoFilterBackend
+import logging
+
 from rest_framework import generics, viewsets
-from rest_framework.filters import OrderingFilter
 
 from materials.models import Course, Lesson
-from materials.permissions import Moderators
-from materials.serializers import (CourseSerializer, LessonSerializer,
-                                   PaymentsSerializer)
-from users.models import Payments
+from materials.permissions import Moderators, Owner
+from materials.serializers import (CourseSerializer, LessonSerializer)
 
+logging.basicConfig(level=logging.DEBUG)
 
 class CourseViewSet(viewsets.ModelViewSet):
+    logging.debug("course")
     serializer_class = CourseSerializer
+    logging.debug("course1")
     queryset = Course.objects.all()
-    permission_classes = [Moderators]
+    logging.debug("course2")
+    permission_classes = [Owner | Moderators]
 
 
 class LessonListCreateApiView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [Moderators]
+    permission_classes = [Owner | Moderators]
 
 
 class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [Moderators]
+    permission_classes = [Owner | Moderators]
 
 
-class PaymentsViewSet(viewsets.ModelViewSet):
-    serializer_class = PaymentsSerializer
-    queryset = Payments.objects.all()
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ("paid_course", "paid_lesson", "payment_method")
-    ordering_fields = ("pay_date",)

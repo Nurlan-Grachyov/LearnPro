@@ -5,8 +5,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from materials.apps import LearningConfig
-from materials.views import PaymentsViewSet
-from users.views import CustomUserViewSets, RegisterCreateAPIView
+from users.views import CustomUserViewSets, RegisterCreateAPIView, PaymentsViewSet
 
 app_name = LearningConfig.name
 

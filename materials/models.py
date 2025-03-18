@@ -1,5 +1,7 @@
 from django.db import models
 
+from config.settings import AUTH_USER_MODEL
+
 
 class Course(models.Model):
     name = models.CharField(max_length=50, verbose_name="course name")
@@ -10,6 +12,7 @@ class Course(models.Model):
         blank=True,
     )
     description = models.TextField(verbose_name="description")
+    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="courses")
 
     class Meta:
         verbose_name = "Курс"
@@ -31,6 +34,7 @@ class Lesson(models.Model):
         blank=True,
     )
     video_url = models.URLField(blank=True, null=True, verbose_name="Video URL")
+    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="lessons")
 
     class Meta:
         verbose_name = "Урок"
