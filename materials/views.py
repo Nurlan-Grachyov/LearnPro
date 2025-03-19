@@ -8,13 +8,21 @@ from materials.serializers import (CourseSerializer, LessonSerializer)
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 class CourseViewSet(viewsets.ModelViewSet):
-    logging.debug("course")
     serializer_class = CourseSerializer
-    logging.debug("course1")
     queryset = Course.objects.all()
-    logging.debug("course2")
     permission_classes = [Owner | Moderators]
+
+    def get_queryset(self):
+        if self.action == "list":
+            logging.debug('go')
+            if not self.request.user.groups.filter(name='Moderators').exists() or not self.request.user.is_superuser:
+                return Course.objects.filter(owner=self.request.user)
+            return Course.objects.all()
+        else:
+            permission_classes = [Owner | Moderators]
+            return permission_classes
 
 
 class LessonListCreateApiView(generics.ListCreateAPIView):
@@ -27,5 +35,3 @@ class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [Owner | Moderators]
-
-

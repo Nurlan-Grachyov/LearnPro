@@ -7,8 +7,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 class Moderators(BasePermission):
     def has_permission(self, request, view):
+        logging.debug("good5")
         if request.method in ("GET", "PUT", "PATCH"):
+            logging.debug("good6")
             if request.user.groups.filter(name='Moderators').exists() or request.user.is_superuser:
+                logging.debug("good7")
                 return True
         return False
 
