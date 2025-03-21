@@ -10,9 +10,13 @@ class Moderators(BasePermission):
         logging.debug("good5")
         if request.method in ("GET", "PUT", "PATCH"):
             logging.debug("good6")
-            if request.user.groups.filter(name='Moderators').exists() or request.user.is_superuser:
-                logging.debug("good7")
-                return True
+            return (
+                request.user.groups.filter(name="Moderators").exists()
+                or request.user.is_superuser
+            )
+        elif request.method == "POST":
+            logging.debug("good7")
+            return request.user.is_superuser
         return False
 
 
@@ -21,8 +25,6 @@ class Owner(BasePermission):
         logging.debug("good")
         if request.method in ("GET", "PUT", "PATCH", "DELETE"):
             logging.debug("good2")
-            if request.user == obj.owner:
-                logging.debug("good3")
-                return True
+            return request.user == obj.owner
         logging.debug("good4")
         return False

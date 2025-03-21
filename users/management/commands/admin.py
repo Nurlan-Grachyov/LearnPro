@@ -12,7 +12,3 @@ class Command(BaseCommand):
         user.is_superuser = True
         user.save()
         self.stdout.write("It was successfully created")
-# normal@mail.ru
-# nurlan@mail.ru
-# moderator@mail.ru
-# nurlan_admin@mail.ru

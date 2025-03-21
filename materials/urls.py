@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from materials.apps import LearningConfig
 from materials.views import (CourseViewSet, LessonListCreateApiView,
-                             LessonRetrieveUpdateDestroy)
+                             LessonRetrieveUpdateDestroyApiView)
 
 app_name = LearningConfig.name
 
@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     path(
         "retrieve_update_destroy/<int:pk>/",
-        LessonRetrieveUpdateDestroy.as_view(),
+        LessonRetrieveUpdateDestroyApiView.as_view(),
         name="retrieve_update_destroy",
     ),
 ] + router.urls

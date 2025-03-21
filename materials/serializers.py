@@ -12,11 +12,13 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = "__all__"
 
-    def get_lessons(self, obj):
+    @staticmethod
+    def get_lessons(obj):
         lessons = Lesson.objects.filter(course=obj)
         return lessons
 
-    def get_count_lessons(self, obj):
+    @staticmethod
+    def get_count_lessons(obj):
         count_lessons = Lesson.objects.filter(course=obj).count()
         return count_lessons
 

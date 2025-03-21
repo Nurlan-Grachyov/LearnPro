@@ -12,7 +12,13 @@ class Course(models.Model):
         blank=True,
     )
     description = models.TextField(verbose_name="description")
-    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="courses")
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="courses",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "Курс"
@@ -34,7 +40,13 @@ class Lesson(models.Model):
         blank=True,
     )
     video_url = models.URLField(blank=True, null=True, verbose_name="Video URL")
-    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="lessons")
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="lessons",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "Урок"
