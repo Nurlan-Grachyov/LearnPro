@@ -6,25 +6,30 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class Moderators(BasePermission):
+    """
+    Проверка на права доступа. Вернет True, если пользователь superuser или входит в группу Moderators
+    """
+
     def has_permission(self, request, view):
-        logging.debug("good5")
         if request.method in ("GET", "PUT", "PATCH"):
-            logging.debug("good6")
             return (
                 request.user.groups.filter(name="Moderators").exists()
                 or request.user.is_superuser
             )
         elif request.method == "POST":
-            logging.debug("good7")
             return request.user.is_superuser
         return False
 
 
 class Owner(BasePermission):
+    """
+    Проверка на права доступа. Вернет True, если пользователь, совершающий операцию, является владельцем объекта
+    """
+
     def has_object_permission(self, request, view, obj):
-        logging.debug("good")
+        logging.debug("good1")
         if request.method in ("GET", "PUT", "PATCH", "DELETE"):
             logging.debug("good2")
             return request.user == obj.owner
-        logging.debug("good4")
+        logging.debug("bad")
         return False

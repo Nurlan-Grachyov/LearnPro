@@ -5,6 +5,10 @@ from users.models import Payments
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор курса с логикой получения уроков и их количества
+    """
+
     count_lessons = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
 
@@ -24,12 +28,10 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор урока
+    """
+
     class Meta:
         model = Lesson
-        fields = "__all__"
-
-
-class PaymentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payments
         fields = "__all__"

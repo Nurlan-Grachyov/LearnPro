@@ -8,6 +8,10 @@ from materials.models import Course, Lesson
 
 
 class CustomUser(AbstractUser):
+    """
+    Модель пользователя
+    """
+
     username = models.CharField(null=True, blank=True, verbose_name="username")
     first_name = models.CharField(null=True, blank=True, verbose_name="first_name")
     last_name = models.CharField(null=True, blank=True, verbose_name="last_name")
@@ -49,6 +53,10 @@ class CustomUser(AbstractUser):
 
 
 class Payments(models.Model):
+    """
+    Модель платежей
+    """
+
     CASH = "cash"
     PAYMENT_TRANSFER = "payment_transfer"
 
@@ -81,6 +89,10 @@ class Payments(models.Model):
     )
 
     def clean(self):
+        """
+        Переопределение метода clean, проверяющий, что указан предмет оплаты
+        """
+
         super().clean()
         if not self.paid_course and not self.paid_lesson:
             raise ValidationError(

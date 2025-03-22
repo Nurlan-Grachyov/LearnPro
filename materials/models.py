@@ -4,6 +4,10 @@ from config.settings import AUTH_USER_MODEL
 
 
 class Course(models.Model):
+    """
+    Модель курса
+    """
+
     name = models.CharField(max_length=50, verbose_name="course name")
     preview = models.ImageField(
         verbose_name="preview",
@@ -30,6 +34,10 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """
+    Модель урока
+    """
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
     name = models.CharField(max_length=50, verbose_name="lesson name")
     description = models.TextField(verbose_name="description")

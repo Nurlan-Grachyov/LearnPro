@@ -1,11 +1,11 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from materials.apps import LearningConfig
+from materials.apps import MaterialsConfig
 from materials.views import (CourseViewSet, LessonListCreateApiView,
                              LessonRetrieveUpdateDestroyApiView)
 
-app_name = LearningConfig.name
+app_name = MaterialsConfig.name
 
 router = DefaultRouter()
 router.register(r"course", CourseViewSet, basename="courses")

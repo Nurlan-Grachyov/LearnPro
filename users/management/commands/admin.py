@@ -3,6 +3,10 @@ from django.core.management import BaseCommand
 
 
 class Command(BaseCommand):
+    """
+    Класс создания суперюзера
+    """
+
     def handle(self, *args, **kwargs):
         User = get_user_model()
         user = User.objects.create(email="nurlan_admin@mail.ru", is_active=True)
