@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from materials.models import Course, Lesson
+from materials.models import Course, Lesson, Subscription
+from materials.validators import validator_materials_description
 from users.models import Payments
 
 
@@ -11,6 +12,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     count_lessons = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
+    description = serializers.CharField(validators=[validator_materials_description])
 
     class Meta:
         model = Course
@@ -32,6 +34,18 @@ class LessonSerializer(serializers.ModelSerializer):
     Сериализатор урока
     """
 
+    description = serializers.CharField(validators=[validator_materials_description])
+
     class Meta:
         model = Lesson
+        fields = "__all__"
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор подписки
+    """
+
+    class Meta:
+        model = Subscription
         fields = "__all__"

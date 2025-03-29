@@ -1,9 +1,12 @@
 import logging
 
 from rest_framework import generics, viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from materials.models import Course, Lesson
+from materials.models import Course, Lesson, Subscription
+from materials.paginators import MaterialsPaginator
 from materials.permissions import Moderators, Owner
 from materials.serializers import CourseSerializer, LessonSerializer
 
@@ -17,6 +20,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    pagination_class = MaterialsPaginator
 
     def perform_create(self, serializer):
         """
@@ -48,8 +52,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         """
 
         if (
-            self.request.user.groups.filter(name="Moderators").exists()
-            or self.request.user.is_superuser
+                self.request.user.groups.filter(name="Moderators").exists()
+                or self.request.user.is_superuser
         ):
             return Course.objects.all()
         return Course.objects.filter(owner=self.request.user)
@@ -63,6 +67,7 @@ class LessonListCreateApiView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [Owner | Moderators]
+    pagination_class = MaterialsPaginator
 
     def perform_create(self, serializer):
         """
@@ -88,9 +93,10 @@ class LessonListCreateApiView(generics.ListCreateAPIView):
         """
         Метод возврата списка продуктов по критериям.
         """
+
         if (
-            self.request.user.groups.filter(name="Moderators").exists()
-            or self.request.user.is_superuser
+                self.request.user.groups.filter(name="Moderators").exists()
+                or self.request.user.is_superuser
         ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
@@ -123,8 +129,36 @@ class LessonRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
         """
 
         if (
-            self.request.user.groups.filter(name="Moderators").exists()
-            or self.request.user.is_superuser
+                self.request.user.groups.filter(name="Moderators").exists()
+                or self.request.user.is_superuser
         ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
+
+
+class SubscriptionViewSet(viewsets.ModelViewSet):
+    """
+    вьюха, в которой осуществлена логика создания подписки и удаления подписки на курс
+    """
+
+    def post(self, *args, **kwargs):
+        """
+        Метод создания подписки и удаления подписки на курс
+        """
+
+        user = self.request.user
+        course_id = self.request.data.get("course")
+        course_item = get_object_or_404(Course, course_id)
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if self.action == 'create':
+            if not subs_item.exists():
+                Subscription.objects.create(user=user, course=course_item)
+                return Response({"message": "Подписка добавлена"})
+            else:
+                return Response({"message": "У вас уже есть эта подписка"})
+        elif self.action == "destroy":
+            if subs_item.exists():
+                Subscription.objects.delete(user=user, course=course_item)
+            else:
+                return Response({"message": "У вас уже нет этой подписки"})

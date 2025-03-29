@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "materials",
     "users",
+
     "phonenumber_field",
     "django_filters",
     "rest_framework_simplejwt",
