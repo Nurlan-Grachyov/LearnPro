@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import MaterialsPaginator
 from materials.permissions import Moderators, Owner
-from materials.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
+from materials.serializers import (CourseSerializer, LessonSerializer,
+                                   SubscriptionSerializer)
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -52,8 +53,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         """
 
         if (
-                self.request.user.groups.filter(name="Moderators").exists()
-                or self.request.user.is_superuser
+            self.request.user.groups.filter(name="Moderators").exists()
+            or self.request.user.is_superuser
         ):
             return Course.objects.all()
         return Course.objects.filter(owner=self.request.user)
@@ -95,8 +96,8 @@ class LessonListCreateApiView(generics.ListCreateAPIView):
         """
 
         if (
-                self.request.user.groups.filter(name="Moderators").exists()
-                or self.request.user.is_superuser
+            self.request.user.groups.filter(name="Moderators").exists()
+            or self.request.user.is_superuser
         ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
@@ -129,8 +130,8 @@ class LessonRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
         """
 
         if (
-                self.request.user.groups.filter(name="Moderators").exists()
-                or self.request.user.is_superuser
+            self.request.user.groups.filter(name="Moderators").exists()
+            or self.request.user.is_superuser
         ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
@@ -143,24 +144,41 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 
     serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all()
-    def post(self, *args, **kwargs):
+    logging.debug("view")
+
+    def create(self, request, *args, **kwargs):
         """
-        Метод создания подписки и удаления подписки на курс
+        Создание новой подписки.
         """
 
-        user = self.request.user
-        course_id = self.request.data.get("course")
-        course_item = get_object_or_404(Course, course_id)
-        subs_item = Subscription.objects.filter(user=user, course=course_item)
+        course_id = request.data.get("course")
+        logging.debug(course_id)
+        course_item = get_object_or_404(Course, pk=course_id)
+        logging.debug(course_item)
 
-        if self.action == 'create':
-            if not subs_item.exists():
-                Subscription.objects.create(user=user, course=course_item)
-                return Response({"message": "Подписка добавлена"})
-            else:
-                return Response({"message": "У вас уже есть эта подписка"})
-        elif self.action == "destroy":
-            if subs_item.exists():
-                Subscription.objects.delete(user=user, course=course_item)
-            else:
-                return Response({"message": "У вас уже нет этой подписки"})
+        subscription_exists = Subscription.objects.filter(
+            user=request.user, course=course_item
+        ).exists()
+
+        if subscription_exists:
+            return Response({"message": "Вы уже подписаны на этот курс."})
+
+        Subscription.objects.create(user=request.user, course=course_item)
+
+        return Response({"message": "Подписка успешно создана."})
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Удаление существующей подписки.
+        """
+
+        subs_id = kwargs.get("pk")
+
+        subscription = Subscription.objects.filter(id=subs_id)
+
+        if not subscription.exists():
+            return Response({"message": "У вас нет активной подписки на этот курс."})
+
+        subscription.delete()
+
+        return Response({"message": "Подписка успешно удалена."})

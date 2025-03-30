@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import serializers
 
 from materials.models import Course, Lesson, Subscription
@@ -20,7 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_lessons(obj):
         lessons = Lesson.objects.filter(course=obj)
-        return lessons
+        return LessonSerializer(lessons, many=True).data
 
     @staticmethod
     def get_count_lessons(obj):
