@@ -140,6 +140,8 @@ class MaterialsTest(APITestCase):
         self.assertTrue(Subscription.objects.all().exists())
 
     def test_delete_subscription(self):
+        # тестирование удаления подписки
+
         response = self.client.delete(
             f"/subscription/{self.subscription.id}/", json=self.subscription
         )
