@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import MaterialsPaginator
 from materials.permissions import Moderators, Owner
-from materials.serializers import CourseSerializer, LessonSerializer
+from materials.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -141,6 +141,8 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     вьюха, в которой осуществлена логика создания подписки и удаления подписки на курс
     """
 
+    serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
     def post(self, *args, **kwargs):
         """
         Метод создания подписки и удаления подписки на курс

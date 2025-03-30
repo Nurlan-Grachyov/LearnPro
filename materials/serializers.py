@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from materials.models import Course, Lesson, Subscription
 from materials.validators import validator_materials_description
-from users.models import Payments
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -41,7 +40,7 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PaymentSerializer(serializers.ModelSerializer):
+class SubscriptionSerializer(serializers.ModelSerializer):
     """
     Сериализатор подписки
     """

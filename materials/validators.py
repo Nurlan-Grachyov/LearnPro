@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 def validator_materials_description(field):
     """
-    валидатор, проверяющий, что в описании нет ссылок на сторонние ресурсы
+    Валидатор, проверяющий, что в описании нет ссылок на сторонние ресурсы
     """
 
     if "youtube.com" not in field:

@@ -28,6 +28,5 @@ class Owner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in ("GET", "PUT", "PATCH", "DELETE"):
-            logging.debug("good2")
             return request.user == obj.owner
         return False
