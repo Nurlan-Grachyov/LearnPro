@@ -36,7 +36,7 @@ def create_price(request):
         product = json.dumps(product)
 
         param = {"unit_amount": unit_amount,
-                 "product_data": product, "currency": "USD"}
+                 "product_data": product, "currency": "usd"}
 
         response = requests.post('https://api.stripe.com/v1/prices', data=param, headers={
             'Authorization': f'Bearer {API_KEY}'
