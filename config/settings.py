@@ -41,12 +41,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "materials",
     "users",
+
     "phonenumber_field",
     "django_filters",
     "rest_framework_simplejwt",
     "rest_framework",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -164,3 +167,5 @@ SIMPLE_JWT = {
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+API_KEY = os.getenv("API_KEY")

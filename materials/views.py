@@ -144,7 +144,6 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 
     serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all()
-    logging.debug("view")
 
     def create(self, request, *args, **kwargs):
         """

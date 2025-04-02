@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from materials.apps import MaterialsConfig
+from materials.services import create_product, create_price, create_session
 from materials.views import (CourseViewSet, LessonListCreateApiView,
                              LessonRetrieveUpdateDestroyApiView,
                              SubscriptionViewSet)
@@ -13,14 +14,30 @@ router.register(r"course", CourseViewSet, basename="courses")
 router.register(r"subscription", SubscriptionViewSet, basename="subscription")
 
 urlpatterns = [
-    path(
-        "list_create_lesson/",
-        LessonListCreateApiView.as_view(),
-        name="list_create_lesson",
-    ),
-    path(
-        "retrieve_update_destroy/<int:pk>/",
-        LessonRetrieveUpdateDestroyApiView.as_view(),
-        name="retrieve_update_destroy",
-    ),
-] + router.urls
+                  path(
+                      "list_create_lesson/",
+                      LessonListCreateApiView.as_view(),
+                      name="list_create_lesson",
+                  ),
+                  path(
+                      "retrieve_update_destroy/<int:pk>/",
+                      LessonRetrieveUpdateDestroyApiView.as_view(),
+                      name="retrieve_update_destroy",
+                  ),
+
+                  path(
+                      "create_product/",
+                      create_product,
+                      name="create_product",
+                  ),
+                  path(
+                      "create_price/",
+                      create_price,
+                      name="create_price",
+                  ),
+                  path(
+                      "create_session/",
+                      create_session,
+                      name="create_session",
+                  ),
+              ] + router.urls
