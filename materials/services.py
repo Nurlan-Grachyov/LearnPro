@@ -30,20 +30,17 @@ def create_product(request):
 def create_price(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
-        product = data.get('product_data')
+        product = data.get('product')
         unit_amount = data.get('unit_amount')
-        product = json.dumps(product)
 
         param = {"unit_amount": unit_amount,
-                 "product_data": product, "currency": "usd"}
+                 "product": product, "currency": "usd"}
 
         response = requests.post('https://api.stripe.com/v1/prices', data=param, headers={
             'Authorization': f'Bearer {API_KEY}'
         })
 
         price_data = response.json()
-        print(price_data)
         price_id = price_data['id']
         print(price_id)
         return JsonResponse({'status': 'success'})
