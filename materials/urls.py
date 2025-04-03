@@ -5,7 +5,6 @@ from materials.apps import MaterialsConfig
 from materials.views import (CourseViewSet, LessonListCreateApiView,
                              LessonRetrieveUpdateDestroyApiView,
                              SubscriptionViewSet)
-from users.views import PaymentsViewSet
 
 app_name = MaterialsConfig.name
 
