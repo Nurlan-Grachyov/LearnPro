@@ -50,11 +50,18 @@ def create_price(request):
 @csrf_exempt
 def create_session(request):
     if request.method == 'POST':
-        price = request.POST.get('price')
-        response = requests.post('https://api.stripe.com/v1/products', data={
-            'price': price
-        }, headers={
-            'Authorization': f'Bearer {API_KEY}'
-        })
+        data = json.loads(request.body)
+        price = data.get("price")
+        print(price)
+        param = {"success_url": "https://example.com/success", "line_items": [{"price": price, "quantity": 2}],
+                 "mode": "payment"}
+
+        response = requests.post('https://api.stripe.com/v1/checkout/sessions', data=param,
+                                 headers={
+                                     'Authorization': f'Bearer {API_KEY}'
+                                 })
+
+        price_data = response.json()
+        print(price_data)
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'fail'}, status=400)
