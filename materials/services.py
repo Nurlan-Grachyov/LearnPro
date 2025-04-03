@@ -29,4 +29,4 @@ def create_session(price):
 
 def test_session(request, session_id):
     session = stripe.checkout.Session.retrieve(session_id)
-    return JsonResponse({'session': session})
+    return JsonResponse({"session": session})
