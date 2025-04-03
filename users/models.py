@@ -52,6 +52,44 @@ class CustomUser(AbstractUser):
         return self.email
 
 
+class Product(models.Model):
+    """
+    Модель продукта
+    """
+
+    name = models.CharField(verbose_name="продукт", max_length=50)
+    stripe_id = models.CharField(verbose_name="идентификатор продукта")
+    paid_course = ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="paid_course",
+        null=True,
+        blank=True,
+    )
+    paid_lesson = ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name="paid_lesson",
+        null=True,
+        blank=True,
+    )
+
+    def clean(self):
+        """
+        Переопределение метода clean, проверяющий, что указан предмет оплаты
+        """
+
+        super().clean()
+        if not self.paid_course and not self.paid_lesson:
+            raise ValidationError(
+                "Должен быть указан либо оплаченный курс, либо оплаченный урок."
+            )
+
+    class Meta:
+        verbose_name = "продукт"
+        verbose_name_plural = "продукты"
+
+
 class Payments(models.Model):
     """
     Модель платежей
