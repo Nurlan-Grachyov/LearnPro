@@ -62,14 +62,14 @@ class Product(models.Model):
     paid_course = ForeignKey(
         Course,
         on_delete=models.CASCADE,
-        related_name="paid_course",
+        related_name="product_course",
         null=True,
         blank=True,
     )
     paid_lesson = ForeignKey(
         Lesson,
         on_delete=models.CASCADE,
-        related_name="paid_lesson",
+        related_name="product_lesson",
         null=True,
         blank=True,
     )
