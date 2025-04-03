@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenViewBase
 
 from materials.permissions import Moderators
+from materials.services import create_price, create_session
 from users.models import CustomUser, Payments
 from users.permissions import SelfUser
 from users.serializers import (CustomUserSerializer, PaymentsSerializer,
@@ -64,6 +65,19 @@ class PaymentsViewSet(viewsets.ModelViewSet):
 
     serializer_class = PaymentsSerializer
     queryset = Payments.objects.all()
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ("paid_course", "paid_lesson", "payment_method")
     ordering_fields = ("pay_date",)
+    print("good3")
+
+    def perform_create(self, serializer):
+        print(self.request.user)
+        payment = serializer.save(user=self.request.user)
+
+        price = create_price(int(payment.payment_amount))
+
+        session_id, payment_link = create_session(price)
+        payment.link = payment_link
+        payment.session_id = session_id
+        payment.save()

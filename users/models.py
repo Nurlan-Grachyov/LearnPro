@@ -52,44 +52,6 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class Product(models.Model):
-    """
-    Модель продукта
-    """
-
-    name = models.CharField(verbose_name="продукт", max_length=50)
-    stripe_id = models.CharField(verbose_name="идентификатор продукта")
-    paid_course = ForeignKey(
-        Course,
-        on_delete=models.CASCADE,
-        related_name="product_course",
-        null=True,
-        blank=True,
-    )
-    paid_lesson = ForeignKey(
-        Lesson,
-        on_delete=models.CASCADE,
-        related_name="product_lesson",
-        null=True,
-        blank=True,
-    )
-
-    def clean(self):
-        """
-        Переопределение метода clean, проверяющий, что указан предмет оплаты
-        """
-
-        super().clean()
-        if not self.paid_course and not self.paid_lesson:
-            raise ValidationError(
-                "Должен быть указан либо оплаченный курс, либо оплаченный урок."
-            )
-
-    class Meta:
-        verbose_name = "продукт"
-        verbose_name_plural = "продукты"
-
-
 class Payments(models.Model):
     """
     Модель платежей
@@ -103,7 +65,9 @@ class Payments(models.Model):
         (PAYMENT_TRANSFER, "оплата переводом"),
     ]
 
-    user = ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
+    user = ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="user", null=True, blank=True
+    )
     pay_date = models.DateField(
         verbose_name="дата оплаты", auto_now_add=True, blank=True
     )
@@ -124,6 +88,10 @@ class Payments(models.Model):
     payment_amount = models.FloatField(verbose_name="сумма оплаты")
     payment_method = models.CharField(
         choices=STATUS_IN_CHOICES, max_length=16, verbose_name="способ оплаты"
+    )
+    link = models.CharField(verbose_name="ссылка для оплаты", null=True, blank=True)
+    session_id = models.CharField(
+        verbose_name="идентификатор оплаты", null=True, blank=True
     )
 
     def clean(self):

@@ -1,66 +1,32 @@
-import json
-
-import requests
+import stripe
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from forex_python.converter import CurrencyRates
 
 from config.settings import API_KEY
 
-
-@csrf_exempt
-def create_product(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        product_name = data.get('name')
-        param = {'name': product_name}
-
-        response = requests.post('https://api.stripe.com/v1/products', data=param,
-                                 headers={
-                                     'Authorization': f'Bearer {API_KEY}'
-                                 })
-        product_data = response.json()
-        product_id = product_data['id']
-        print(product_id)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'fail'}, status=400)
+stripe.api_key = API_KEY
 
 
-@csrf_exempt
-def create_price(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        product = data.get('product')
-        unit_amount = data.get('unit_amount')
-
-        param = {"unit_amount": unit_amount,
-                 "product": product, "currency": "usd"}
-
-        response = requests.post('https://api.stripe.com/v1/prices', data=param, headers={
-            'Authorization': f'Bearer {API_KEY}'
-        })
-
-        price_data = response.json()
-        price_id = price_data['id']
-        print(price_id)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'fail'}, status=400)
+def create_price(amount):
+    """Создание цены для объекта"""
+    price = stripe.Price.create(
+        currency="usd",
+        unit_amount=amount * 100,
+        product_data={"name": "tuition fees"},
+    )
+    return price
 
 
-@csrf_exempt
-def create_session(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        price = data.get("price")
-        print(price)
-        param = {"success_url": "https://example.com/success", "line_items": [{"price": price, "quantity": 2}],
-                 "mode": "payment"}
+def create_session(price):
+    """Создание сессии оплаты"""
+    session = stripe.checkout.Session.create(
+        success_url="http://127.0.0.1:8000/",
+        line_items=[{"price": price.get("id"), "quantity": 1}],
+        mode="payment",
+    )
+    return session.get("id"), session.get("url")
 
-        response = requests.post('https://api.stripe.com/v1/checkout/sessions', data=param,
-                                 headers={
-                                     'Authorization': f'Bearer {API_KEY}'
-                                 })
 
-        price_data = response.json()
-        print(price_data)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'fail'}, status=400)
+def test_session(request, session_id):
+    session = stripe.checkout.Session.retrieve(session_id)
+    return JsonResponse({'session': session})
