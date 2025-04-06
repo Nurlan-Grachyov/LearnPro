@@ -19,13 +19,13 @@ class MaterialsTest(APITestCase):
         self.lesson_data = {
             "name": "test_lesson",
             "description": "test_lesson",
-            "course": 21,
+            "course": self.course.id,
         }
         self.lesson = Lesson.objects.create(
-            name="test_lesson", description="test_lesson", course=self.course.id
+            name="test_lesson", description="test_lesson", course=self.course
         )
         self.lesson_update = Lesson.objects.filter(name="test_lesson").update(
-            name="test_lesson_update", description="test_lesson_update", course=self.course.id
+            name="test_lesson_update", description="test_lesson_update", course=self.course
         )
         self.factory = APIRequestFactory()
         moderators_group, created = Group.objects.get_or_create(name="Moderators")
@@ -36,7 +36,7 @@ class MaterialsTest(APITestCase):
 
         self.normal_user = CustomUser.objects.create(email="normal@mail.ru")
         self.subscription = Subscription.objects.create(
-            user=self.normal_user, course=self.course.id
+            user=self.normal_user, course=self.course
         )
 
     def tearDown(self):
