@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from django.db import connections
 from rest_framework import status
 from rest_framework.test import (APIRequestFactory, APITestCase,
                                  force_authenticate)
@@ -21,10 +22,10 @@ class MaterialsTest(APITestCase):
             "course": 21,
         }
         self.lesson = Lesson.objects.create(
-            name="test_lesson", description="test_lesson", course=21
+            name="test_lesson", description="test_lesson", course=self.course.id
         )
         self.lesson_update = Lesson.objects.filter(name="test_lesson").update(
-            name="test_lesson_update", description="test_lesson_update", course=13
+            name="test_lesson_update", description="test_lesson_update", course=self.course.id
         )
         self.factory = APIRequestFactory()
         moderators_group, created = Group.objects.get_or_create(name="Moderators")
@@ -37,6 +38,10 @@ class MaterialsTest(APITestCase):
         self.subscription = Subscription.objects.create(
             user=self.normal_user, course=self.course.id
         )
+
+    def tearDown(self):
+        super().tearDown()
+        connections.close_all()
 
     def test_create_lesson_with_root(self):
         # тестирование создания юзером-модератором
