@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "materials",
     "users",
+
     "phonenumber_field",
     "django_filters",
     "rest_framework_simplejwt",
     "rest_framework",
     "drf_yasg",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -128,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -158,7 +160,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "users.CustomUser"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -167,3 +169,24 @@ STATICFILES_DIRS = [
 ]
 
 API_KEY = os.getenv("API_KEY")
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'myapp.tasks.my_task',
+        'schedule': timedelta(minutes=10),
+    },
+}
+
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_PASSWORD=os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER=os.getenv("EMAIL_HOST_USER")
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False

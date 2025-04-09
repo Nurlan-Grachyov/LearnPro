@@ -1,15 +1,20 @@
 import logging
+from datetime import datetime
 
-from rest_framework import generics, viewsets
+import pytz
+from django.utils import timezone
+from rest_framework import generics, viewsets, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from yaml import serialize
 
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import MaterialsPaginator
 from materials.permissions import Moderators, Owner
 from materials.serializers import (CourseSerializer, LessonSerializer,
                                    SubscriptionSerializer)
+from materials.tasks import send_email_about_update_materials
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -29,6 +34,24 @@ class CourseViewSet(viewsets.ModelViewSet):
         """
 
         serializer.save(owner=self.request.user)
+
+    def partial_update(self, request, *args, **kwargs):
+        print(kwargs)
+        course_id = kwargs.get("pk")
+        print(course_id)
+        course = Course.objects.get(id=course_id)
+        print(course)
+        serializer = CourseSerializer(course, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            subs = Subscription.objects.filter(course=course.id)
+            print(subs)
+            users_ids = [sub.user.id for sub in subs]
+            if users_ids:
+                send_email_about_update_materials(users_ids)
+            return Response({"message": "Курс успешно обновлен"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get_permissions(self):
         """
@@ -53,8 +76,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         """
 
         if (
-            self.request.user.groups.filter(name="Moderators").exists()
-            or self.request.user.is_superuser
+                self.request.user.groups.filter(name="Moderators").exists()
+                or self.request.user.is_superuser
         ):
             return Course.objects.all()
         return Course.objects.filter(owner=self.request.user)
@@ -96,8 +119,8 @@ class LessonListCreateApiView(generics.ListCreateAPIView):
         """
 
         if (
-            self.request.user.groups.filter(name="Moderators").exists()
-            or self.request.user.is_superuser
+                self.request.user.groups.filter(name="Moderators").exists()
+                or self.request.user.is_superuser
         ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
@@ -110,6 +133,24 @@ class LessonRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+
+    def partial_update(self, request, *args, **kwargs):
+        lesson_id = kwargs.get("pk")
+        try:
+            lesson = Lesson.objects.get(id=lesson_id)
+        except Lesson.DoesNotExist:
+            return Response({"message": "Такого урока не существует"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = LessonSerializer(lesson, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            subs = Subscription.objects.filter(course=lesson.course.id)
+            users_ids = [sub.user.id for sub in subs]
+            if users_ids:
+                send_email_about_update_materials(users_ids)
+            return Response({"message": "Урок успешно обновлен"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get_permissions(self):
         """
@@ -130,8 +171,8 @@ class LessonRetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
         """
 
         if (
-            self.request.user.groups.filter(name="Moderators").exists()
-            or self.request.user.is_superuser
+                self.request.user.groups.filter(name="Moderators").exists()
+                or self.request.user.is_superuser
         ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)

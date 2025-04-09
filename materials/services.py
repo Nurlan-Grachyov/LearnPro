@@ -1,5 +1,6 @@
 import stripe
 from django.http import JsonResponse
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from forex_python.converter import CurrencyRates
 
 from config.settings import API_KEY
@@ -31,3 +32,14 @@ def test_session(request, session_id):
     """Просмотр сессии оплаты через идентификатор сессии"""
     session = stripe.checkout.Session.retrieve(session_id)
     return JsonResponse({"session": session})
+
+
+def set_schedule():
+    schedule, created = IntervalSchedule.objects.get_or_create(
+        every=10,
+        period=IntervalSchedule.SECONDS, )
+
+    PeriodicTask.objects.create(
+        interval=schedule,
+        name='Block users',
+        task='materials.tasks.block', )
