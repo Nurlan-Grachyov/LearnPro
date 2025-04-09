@@ -47,6 +47,7 @@ class Lesson(models.Model):
         null=True,
         blank=True,
     )
+
     video_url = models.URLField(blank=True, null=True, verbose_name="Video URL")
     owner = models.ForeignKey(
         AUTH_USER_MODEL,

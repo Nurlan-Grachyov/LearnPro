@@ -22,6 +22,7 @@ drf-yasg = "^1.21.10"
 stripe = "^12.0.0"
 requests = "^2.32.3"
 forex-python = "^1.8"
+ipython = "^9.1.0"
 
 
 [build-system]

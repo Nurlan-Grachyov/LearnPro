@@ -69,10 +69,8 @@ class PaymentsViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ("paid_course", "paid_lesson", "payment_method")
     ordering_fields = ("pay_date",)
-    print("good3")
 
     def perform_create(self, serializer):
-        print(self.request.user)
         payment = serializer.save(user=self.request.user)
 
         price = create_price(int(payment.payment_amount))

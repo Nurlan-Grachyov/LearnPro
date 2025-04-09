@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         User = get_user_model()
-        user = User.objects.create(email="nurlan-admin@mail.ru", is_active=True)
+        user = User.objects.create(email="nurlan-admin@mail.ru")
         user.set_password("12345678")
         user.is_staff = True
         user.is_active = True
