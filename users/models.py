@@ -24,7 +24,6 @@ class CustomUser(AbstractUser):
         blank=True, null=True, verbose_name="avatar", upload_to="images/users"
     )
     is_staff = models.BooleanField(blank=True, default=False)
-    last_login = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

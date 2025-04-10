@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "materials",
     "users",
-
     "phonenumber_field",
     "django_filters",
     "rest_framework_simplejwt",
@@ -178,15 +177,15 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
-    'task-name': {
-        'task': 'myapp.tasks.my_task',
-        'schedule': timedelta(minutes=10),
+    "task-name": {
+        "task": "materials.tasks.block",
+        "schedule": timedelta(seconds=5),
     },
 }
 
 EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_PASSWORD=os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_HOST_USER=os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False

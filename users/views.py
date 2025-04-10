@@ -5,9 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from materials.permissions import Moderators
 from materials.services import create_price, create_session
@@ -53,22 +51,23 @@ class RegisterCreateAPIView(generics.CreateAPIView):
     authentication_classes = []
 
 
-class TokenObtainPairView(TokenViewBase):
+class MyTokenObtainPairView(TokenObtainPairView, TokenViewBase):
     """
     Переопределение класса TokenObtainPairView с предоставлением доступа всем
     """
 
     permission_classes = [AllowAny]
-    
-    # def post(self, request, *args, **kwargs):
-    #     response = super().post(request, *args, **kwargs)
-    #     if response.status_code == 200:
-    #         user = self.get_user(request.data)
-    #         update_last_login(None, user)
-    #     return response
-    #
-    # def get_user(self, validated_data):
-    #     return CustomUser.objects.get(username=validated_data['username'])
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            print(request.data)
+            user = self.get_user(request.data)
+            update_last_login(None, user)
+        return response
+
+    def get_user(self, validated_data):
+        return CustomUser.objects.get(email=validated_data["email"])
 
 
 class PaymentsViewSet(viewsets.ModelViewSet):
@@ -92,4 +91,3 @@ class PaymentsViewSet(viewsets.ModelViewSet):
         payment.link = payment_link
         payment.session_id = session_id
         payment.save()
-
