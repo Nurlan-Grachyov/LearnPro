@@ -100,10 +100,10 @@ class Payments(models.Model):
         """
 
         super().clean()
-        if not self.paid_course and not self.paid_lesson:
-            raise ValidationError(
-                "Должен быть указан либо оплаченный курс, либо оплаченный урок."
-            )
+        if self.paid_course != self.paid_lesson:
+            pass
+        else:
+            raise ValidationError("Должен быть указан либо оплаченный курс, либо оплаченный урок.")
 
     class Meta:
         verbose_name = "Оплата"

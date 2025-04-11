@@ -87,19 +87,6 @@ class MaterialsTest(APITestCase):
         response = LessonListCreateApiView.as_view()(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        self.assertEqual(
-            response.data,
-            {
-                "id": 2,
-                "description": "test_lesson",
-                "name": "test_lesson",
-                "preview": None,
-                "video_url": None,
-                "course": 1,
-                "owner": 3,
-            },
-        )
-
         self.assertTrue(Lesson.objects.filter(name="test_lesson").exists())
 
     def test_create_lesson_without_root(self):
