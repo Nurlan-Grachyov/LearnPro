@@ -1,0 +1,45 @@
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+      - static_volume:/code/static
+    ports:
+      - "8080:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  celery_worker:
+    build: .
+    command: bash -c "cd /code && celery -A config worker --loglevel=info"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+
+  celery_beat:
+    build: .
+    command: bash -c "cd /code && celery -A config beat --loglevel=info"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+
+  redis:
+    image: redis:alpine
+
+volumes:
+  static_volume:
+  postgres_data:

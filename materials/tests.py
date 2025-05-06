@@ -1,5 +1,4 @@
 from django.contrib.auth.models import Group
-from django.db import connections
 from rest_framework import status
 from rest_framework.test import (APIRequestFactory, APITestCase,
                                  force_authenticate)

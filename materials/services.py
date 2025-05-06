@@ -1,10 +1,6 @@
-import json
-from datetime import datetime, timedelta
-
 import stripe
 from django.http import JsonResponse
-from django_celery_beat.models import IntervalSchedule, PeriodicTask
-from forex_python.converter import CurrencyRates
+
 
 from config.settings import API_KEY
 
