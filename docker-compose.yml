@@ -1,18 +1,28 @@
 services:
   web:
     build: .
-    command: >-
+    command: >
       sh -c '
       python manage.py makemigrations &&
-      python manage.py migrate' &&
-      python manage.py runserver 0.0.0.0:8000 --noreload
+      python manage.py migrate'
+    volumes:
+      - .:/code
+      - static_volume:/code/static
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  web-server:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000 --noreload
     volumes:
       - .:/code
       - static_volume:/code/static
     ports:
       - "8080:8000"
     depends_on:
-      - db
+      - web
     env_file:
       - ./.env
 
