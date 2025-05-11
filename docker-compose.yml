@@ -26,6 +26,17 @@ services:
     env_file:
       - ./.env
 
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/static
+    depends_on:
+      - web
+
   celery_worker:
     build: .
     command: bash -c "cd /code && celery -A config worker --loglevel=info"
