@@ -30,8 +30,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
+# ALLOWED_HOSTS = ["127.0.0.1", "localhost", "host.docker.internal"]
 ALLOWED_HOSTS = ["*"]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "materials",
     "users",
+
     "phonenumber_field",
     "django_filters",
     "rest_framework_simplejwt",
@@ -178,3 +180,8 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+# CSRF_TRUSTED_ORIGIN = [
+#     "http://127.0.0.1:80",
+#     "http://127.0.0.1",
+#     ]

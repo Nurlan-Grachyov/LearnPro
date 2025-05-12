@@ -1,28 +1,23 @@
 services:
+  db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+
   web:
     build: .
     command: >
-      sh -c '
-      python manage.py makemigrations &&
-      python manage.py migrate'
+      sh -c 
+      "python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py runserver 127.0.0.0:8000"
     volumes:
       - .:/code
       - static_volume:/code/static
     depends_on:
       - db
-    env_file:
-      - ./.env
-
-  web-server:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000 --noreload
-    volumes:
-      - .:/code
-      - static_volume:/code/static
-    ports:
-      - "8080:8000"
-    depends_on:
-      - web
     env_file:
       - ./.env
 
@@ -54,13 +49,6 @@ services:
     depends_on:
       - db
       - redis
-
-  db:
-    image: postgres:16
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    env_file:
-      - ./.env
 
   redis:
     image: redis:7.0.2-alpine
