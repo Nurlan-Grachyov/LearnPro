@@ -139,6 +139,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -181,7 +182,7 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-# CSRF_TRUSTED_ORIGIN = [
-#     "http://127.0.0.1:80",
-#     "http://127.0.0.1",
-#     ]
+CSRF_TRUSTED_ORIGIN = [
+    "http://127.0.0.1:80",
+    "http://127.0.0.1",
+    ]

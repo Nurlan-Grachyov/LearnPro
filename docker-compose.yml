@@ -14,9 +14,10 @@ services:
     build: .
     command: >
       sh -c 
-      "python manage.py makemigrations &&
-      python manage.py migrate &&
-      gunicorn nginx_with_static_media.wsgi:application --bind 0.0.0.0:8000"
+      "python manage.py makemigrations && \
+      python manage.py migrate && \
+      python manage.py collectstatic --noinput && \
+      python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
       - static_volume:/code/static
@@ -27,7 +28,8 @@ services:
 
   nginx:
     build:
-      context: ./nginx
+      context: .
+      dockerfile: ./nginx/Dockerfile
     ports:
       - "80:80"
     volumes:
