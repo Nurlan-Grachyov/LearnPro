@@ -30,6 +30,10 @@ jobs:
         run: |
           poetry install
 
+      - name: Build and start services
+        run: |
+          docker-compose up -d
+
       - name: Wait for PostgreSQL to be ready
         run: |
           until pg_isready -h localhost -p 5432; do sleep 1; done
