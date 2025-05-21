@@ -32,7 +32,7 @@ jobs:
 
       - name: Build and start services
         run: |
-          docker-compose up -d
+          poetry run docker-compose up -d
 
       - name: Wait for PostgreSQL to be ready
         run: |
