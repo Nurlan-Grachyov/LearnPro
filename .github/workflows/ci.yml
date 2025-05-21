@@ -5,6 +5,28 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -13,9 +35,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-
-      - name: Set up Docker
-        uses: actions/setup-docker@v1
 
       - name: Cache Poetry dependencies
         uses: actions/cache@v3
@@ -32,10 +51,6 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-
-      - name: Build and start services
-        run: |
-          poetry run docker-compose up -d
 
       - name: Wait for PostgreSQL to be ready
         run: |
