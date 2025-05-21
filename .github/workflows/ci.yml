@@ -83,11 +83,11 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cat <<EOT > ${{ secrets.DEPLOY_DIR }}/.env
           DEBUG=False
-          SECRET_KEY=${{ secrets.ENV_SECRET_KEY }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS=${{ secrets.ENV_ALLOWED_HOSTS }}
-          DB_NAME=${{ secrets.ENV_DB_NAME }}
-          DB_USER=${{ secrets.ENV_DB_USER }}
-          DB_PASSWORD=${{ secrets.ENV_DB_PASSWORD }}
+          DB_NAME=${{ secrets.POSTGRES_DB }}
+          DB_USER=${{ secrets.POSTGRES_USER }}
+          DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           EOT
           EOF
 
