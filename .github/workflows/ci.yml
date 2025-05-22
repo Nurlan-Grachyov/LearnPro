@@ -69,6 +69,7 @@ jobs:
     needs: test
 
     steps:
+      - uses: actions/checkout@v4
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.8.1
         with:
