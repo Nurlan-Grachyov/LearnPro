@@ -75,48 +75,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Copy project files to server
+      - name: Rerun
         run: |
-          rsync -avz --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
-
-      - name: Generate .env on server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          cat <<EOT > ${{ secrets.DEPLOY_DIR }}/.env
-          DEBUG=False
-          SECRET_KEY=${{ secrets.SECRET_KEY }}
-          ALLOWED_HOSTS=${{ secrets.ENV_ALLOWED_HOSTS }}
-          DB_NAME=${{ secrets.POSTGRES_DB }}
-          DB_USER=${{ secrets.POSTGRES_USER }}
-          DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          EOT
-          EOF
-
-      - name: Install dependencies on server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd ${{ secrets.DEPLOY_DIR }}
-            curl -sSL https://install.python-poetry.org | python -
-            poetry install
-          EOF
-
-      - name: Apply migrations on server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd ${{ secrets.DEPLOY_DIR }}
-            poetry run python manage.py migrate
-          EOF
-
-      - name: Collect static files on server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd ${{ secrets.DEPLOY_DIR }}
-            source venv/bin/activate
-            poetry run python manage.py collectstatic --noinput
-          EOF
-
-      - name: Restart application
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            sudo systemctl restart myapp.service
-          EOF
+          cd HomeworkDRF
+          git pull origin feature
+          docker-compose down
+          docker-compose up --build -d
