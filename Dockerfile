@@ -19,6 +19,6 @@ ENV CELERY_BACKEND="redis://redis:6379"
 
 RUN mkdir -p /app/media
 
-RUN mkdir -p /code/staticfiles
+RUN mkdir -p /app/staticfiles
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

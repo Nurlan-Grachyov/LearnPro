@@ -20,7 +20,7 @@ services:
       python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
-      - static_volume:/code/staticfiles
+      - static_volume:/app/staticfiles/
     depends_on:
       - db
     env_file:
@@ -33,7 +33,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - static_volume:/code/staticfiles
+      - static_volume:/app/staticfiles/
     depends_on:
       - web
 
