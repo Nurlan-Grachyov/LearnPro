@@ -77,7 +77,7 @@ jobs:
 
       - name: Rerun
         run: |
-          cd HomeworkDRF
+          cd ~/HomeworkDRF
           git pull origin feature
           docker-compose down
           docker-compose up --build -d
