@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure-!0q#0g0*=o$fv=zv^^n0e@%@d^e++j55^2g!)d)t*yk%gymwdf
 DEBUG = os.getenv("DEBUG") == "True"
 
 # ALLOWED_HOSTS = ["127.0.0.1", "localhost", "host.docker.internal"]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
