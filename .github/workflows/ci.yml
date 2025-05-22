@@ -69,15 +69,14 @@ jobs:
     needs: test
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      - name: Rerun
-        run: |
-          cd ~/HomeworkDRF
-          git pull origin feature
-          docker-compose down
-          docker-compose up --build -d
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/HomeworkDRF
+            git pull origin feature
+            docker compose down
+            docker compose up -d --build
