@@ -1,7 +1,9 @@
+import logging
+
 from rest_framework import serializers
 
-from materials.models import Course, Lesson
-from users.models import Payments
+from materials.models import Course, Lesson, Subscription
+from materials.validators import validator_materials_description
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -11,6 +13,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     count_lessons = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
+    description = serializers.CharField(validators=[validator_materials_description])
 
     class Meta:
         model = Course
@@ -19,7 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_lessons(obj):
         lessons = Lesson.objects.filter(course=obj)
-        return lessons
+        return LessonSerializer(lessons, many=True).data
 
     @staticmethod
     def get_count_lessons(obj):
@@ -32,6 +35,18 @@ class LessonSerializer(serializers.ModelSerializer):
     Сериализатор урока
     """
 
+    description = serializers.CharField(validators=[validator_materials_description])
+
     class Meta:
         model = Lesson
+        fields = "__all__"
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор подписки
+    """
+
+    class Meta:
+        model = Subscription
         fields = "__all__"

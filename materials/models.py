@@ -23,6 +23,7 @@ class Course(models.Model):
         null=True,
         blank=True,
     )
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
         verbose_name = "Курс"
@@ -47,6 +48,7 @@ class Lesson(models.Model):
         null=True,
         blank=True,
     )
+
     video_url = models.URLField(blank=True, null=True, verbose_name="Video URL")
     owner = models.ForeignKey(
         AUTH_USER_MODEL,
@@ -55,6 +57,7 @@ class Lesson(models.Model):
         null=True,
         blank=True,
     )
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
         verbose_name = "Урок"
@@ -63,3 +66,25 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Subscription(models.Model):
+    """
+    Модель подписки
+    """
+
+    user = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+        blank=True,
+        null=True,
+    )
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="subscriptions"
+    )
+
+    class Meta:
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+        ordering = ["user"]
