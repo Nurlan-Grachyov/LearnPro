@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from materials.permissions import Moderators
-from materials.services import create_price, create_session
+from users.services import create_price, create_session
 from users.models import CustomUser, Payments
 from users.permissions import SelfUser
 from users.serializers import (CustomUserSerializer, PaymentsSerializer,
@@ -61,7 +61,6 @@ class MyTokenObtainPairView(TokenObtainPairView, TokenViewBase):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
-            print(request.data)
             user = self.get_user(request.data)
             update_last_login(None, user)
         return response

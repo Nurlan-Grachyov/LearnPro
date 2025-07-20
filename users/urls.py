@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from materials.services import test_session
+from users.services import test_session
 from users.apps import UsersConfig
 from users.views import (CustomUserViewSets, MyTokenObtainPairView,
                          PaymentsViewSet, RegisterCreateAPIView)

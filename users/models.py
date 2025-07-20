@@ -19,6 +19,7 @@ class CustomUser(AbstractUser):
     phone_number = PhoneNumberField(
         blank=True, null=True, verbose_name="Phone number", unique=True
     )
+
     town = models.CharField(blank=True, null=True, verbose_name="town")
     avatar = models.ImageField(
         blank=True, null=True, verbose_name="avatar", upload_to="images/users"
